@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/add_pegawai_controller.dart';
+import '../controllers/update_profile_controller.dart';
 
-class AddPegawaiView extends GetView<AddPegawaiController> {
-  const AddPegawaiView({Key? key}) : super(key: key);
+class UpdateProfileView extends GetView<UpdateProfileController> {
+  UpdateProfileView({Key? key}) : super(key: key);
+  final Map<String, dynamic> user = Get.arguments;
+
   @override
   Widget build(BuildContext context) {
+    controller.nipC.text = user["nip"];
+    controller.nameC.text = user["name"];
+    controller.emailC.text = user["email"];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ADD PEGAWAI'),
+        title: const Text('UPDATE PROFILE'),
         centerTitle: true,
       ),
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
           TextField(
+            readOnly: true,
             autocorrect: false,
             controller: controller.nipC,
             decoration: InputDecoration(
@@ -39,6 +45,7 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
             height: 20,
           ),
           TextField(
+            readOnly: true,
             autocorrect: false,
             controller: controller.emailC,
             decoration: InputDecoration(
@@ -53,13 +60,14 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
             () => ElevatedButton(
               onPressed: () async {
                 if (controller.isLoading.isFalse) {
-                  await controller.addPegawai();
+                  await controller.updateProfile(user["uid"]);
                 }
               },
-              child: Text(
-                  controller.isLoading.isFalse ? "ADD PEGAWAI" : "Loading..."),
+              child: Text(controller.isLoading.isFalse
+                  ? "UPDATE PROFILE"
+                  : "Loading..."),
             ),
-          )
+          ),
         ],
       ),
     );

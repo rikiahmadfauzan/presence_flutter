@@ -11,7 +11,7 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('LOGIN'),
         centerTitle: true,
       ),
       body: ListView(
@@ -48,7 +48,7 @@ class LoginView extends GetView<LoginController> {
                 }
               },
               child:
-                  Text(controller.isLoading.isFalse ? "Login" : "Loading..."),
+                  Text(controller.isLoading.isFalse ? "LOGIN" : "Loading..."),
             ),
           ),
           TextButton(

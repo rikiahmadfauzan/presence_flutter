@@ -10,7 +10,7 @@ class NewPasswordView extends GetView<NewPasswordController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Password'),
+        title: const Text('NEW PASSWORD'),
         centerTitle: true,
       ),
       body: ListView(
@@ -32,7 +32,7 @@ class NewPasswordView extends GetView<NewPasswordController> {
               onPressed: () {
                 controller.newPassword();
               },
-              child: Text("Continue"))
+              child: Text("CONTINUE"))
         ],
       ),
     );

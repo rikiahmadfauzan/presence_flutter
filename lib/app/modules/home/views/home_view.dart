@@ -13,26 +13,13 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomeView'),
+        title: const Text('HOME'),
         centerTitle: true,
         actions: [
-          StreamBuilder(
-            stream: controller.streamRole(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox();
-              }
-              String role = snapshot.data!.data()!["role"];
-              if (role == "admin") {
-                return IconButton(
-                  onPressed: () => Get.toNamed(Routes.ADD_PEGAWAI),
-                  icon: Icon(Icons.person),
-                );
-              } else {
-                return SizedBox();
-              }
-            },
-          )
+          IconButton(
+            onPressed: () => Get.toNamed(Routes.PROFILE),
+            icon: Icon(Icons.person),
+          ),
         ],
       ),
       body: const Center(
