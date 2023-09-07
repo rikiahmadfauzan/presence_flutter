@@ -48,7 +48,7 @@ class LoginView extends GetView<LoginController> {
                 }
               },
               child:
-                  Text(controller.isLoading.isFalse ? "LOGIN" : "Loading..."),
+                  Text(controller.isLoading.isFalse ? "LOGIN" : "LOADING..."),
             ),
           ),
           TextButton(

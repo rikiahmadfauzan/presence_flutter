@@ -36,7 +36,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               },
               child: Text(controller.isLoading.isFalse
                   ? "SEND EMAIL RESET PASSWORD"
-                  : "Loading..."),
+                  : "LOADING..."),
             ),
           ),
         ],

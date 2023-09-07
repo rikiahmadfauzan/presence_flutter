@@ -121,7 +121,7 @@ class AddPegawaiController extends GetxController {
                 isLoading.value = false;
               },
               child: Text(
-                  isLoadingAddPegawai.isFalse ? "Add Pegawai" : "Loading..."),
+                  isLoadingAddPegawai.isFalse ? "Add Pegawai" : "LOADING..."),
             ),
           )
         ],

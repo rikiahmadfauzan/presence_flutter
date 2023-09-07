@@ -57,7 +57,7 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
                 }
               },
               child: Text(
-                  controller.isLoading.isFalse ? "ADD PEGAWAI" : "Loading..."),
+                  controller.isLoading.isFalse ? "ADD PEGAWAI" : "LOADING..."),
             ),
           )
         ],
