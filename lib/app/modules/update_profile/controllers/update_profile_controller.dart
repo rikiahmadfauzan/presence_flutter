@@ -22,13 +22,6 @@ class UpdateProfileController extends GetxController {
 
   void pickImage() async {
     image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      print(image!.name);
-      print(image!.name.split(".").last);
-      print(image!.path);
-    } else {
-      print(image);
-    }
     update();
   }
 
@@ -38,17 +31,20 @@ class UpdateProfileController extends GetxController {
         emailC.text.isNotEmpty) {
       isLoading.value = true;
       try {
+        Map<String, dynamic> data = {
+          "name": nameC.text,
+        };
         if (image != null) {
           File file = File(image!.path);
           String ext = image!.name.split(".").last;
 
           await storage.ref('$uid/profile.$ext').putFile(file);
-          // String urlImage =
-          //     await storage.ref('$uid/profile.$ext').getDownloadURL();
+          String urlImage =
+              await storage.ref('$uid/profile.$ext').getDownloadURL();
+
+          data.addAll({"profile": urlImage});
         }
-        await firestore.collection("pegawai").doc(uid).update({
-          "name": nameC.text,
-        });
+        await firestore.collection("pegawai").doc(uid).update(data);
         Get.snackbar("Berhasil", "Berhasil update profile.");
       } catch (e) {
         Get.snackbar("Terjadi kesalahan", "Tidak dapat update profile.");
@@ -57,4 +53,18 @@ class UpdateProfileController extends GetxController {
       }
     }
   }
+
+  // void deleteProfile(String uid) async {
+  //   try {
+  //     await firestore.collection("pegawai").doc(uid).update({
+  //       "profile": FieldValue.delete(),
+  //     });
+  //     Get.back();
+  //     Get.snackbar("Berhasil", "Berhasil delete profile.");
+  //   } catch (e) {
+  //     Get.snackbar("Terjadi kesalahan", "Tidak dapat delete profile.");
+  //   } finally {
+  //     update();
+  //   }
+  // }
 }

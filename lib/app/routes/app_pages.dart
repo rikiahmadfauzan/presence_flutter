@@ -27,33 +27,35 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => const HomeView(),
+      page: () => HomeView(),
       binding: HomeBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.ADD_PEGAWAI,
-      page: () => const AddPegawaiView(),
+      page: () => AddPegawaiView(),
       binding: AddPegawaiBinding(),
     ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () => const LoginView(),
+      page: () => LoginView(),
       binding: LoginBinding(),
     ),
     GetPage(
       name: _Paths.NEW_PASSWORD,
-      page: () => const NewPasswordView(),
+      page: () => NewPasswordView(),
       binding: NewPasswordBinding(),
     ),
     GetPage(
       name: _Paths.FORGOT_PASSWORD,
-      page: () => const ForgotPasswordView(),
+      page: () => ForgotPasswordView(),
       binding: ForgotPasswordBinding(),
     ),
     GetPage(
       name: _Paths.PROFILE,
-      page: () => const ProfileView(),
+      page: () => ProfileView(),
       binding: ProfileBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.UPDATE_PROFILE,
@@ -62,7 +64,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.UPDATE_PASSWORD,
-      page: () => const UpdatePasswordView(),
+      page: () => UpdatePasswordView(),
       binding: UpdatePasswordBinding(),
     ),
   ];

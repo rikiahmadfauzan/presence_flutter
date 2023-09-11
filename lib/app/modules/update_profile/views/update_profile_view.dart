@@ -79,15 +79,27 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
                     );
                   } else {
                     if (user["profile"] != null) {
-                      return ClipOval(
-                        child: Container(
-                          height: 100,
-                          width: 100,
-                          child: Image.network(
-                            user["profile"],
-                            fit: BoxFit.cover,
+                      return Column(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              child: Image.network(
+                                user["profile"],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+
+                          //delete profile
+                          // TextButton(
+                          //   onPressed: () {
+                          //     controller.deleteProfile(user["uid"]);
+                          //   },
+                          //   child: Text("Delete"),
+                          // )
+                        ],
                       );
                     } else {
                       return Text("no image chosen");
@@ -96,10 +108,11 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
                 },
               ),
               TextButton(
-                  onPressed: () {
-                    controller.pickImage();
-                  },
-                  child: Text("Choose"))
+                onPressed: () {
+                  controller.pickImage();
+                },
+                child: Text("Choose"),
+              ),
             ],
           ),
           SizedBox(height: 30),
