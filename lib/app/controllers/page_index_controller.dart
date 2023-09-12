@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:presence/app/routes/app_pages.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class PageIndexController extends GetxController {
   RxInt pageIndex = 0.obs;
@@ -18,9 +20,16 @@ class PageIndexController extends GetxController {
         Map<String, dynamic> dataResponse = await determinePosition();
         if (dataResponse["error"] != true) {
           Position position = dataResponse["position"];
-          await updatePosition(position);
-          Get.snackbar("${dataResponse['message']}",
-              "${position.latitude}, ${position.longitude}");
+
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+              position.latitude, position.longitude);
+          String address =
+              "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea} ${placemarks[0].postalCode}";
+          await updatePosition(position, address);
+          //presensi
+          await presensi(position, address);
+
+          Get.snackbar("Berhasil", "Telah berhasil melakukan absen");
         } else {
           Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
         }
@@ -35,7 +44,69 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future<void> updatePosition(Position position) async {
+  Future<void> presensi(Position position, String address) async {
+    String uid = await auth.currentUser!.uid;
+
+    CollectionReference<Map<String, dynamic>> colPresence =
+        await firestore.collection("pegawai").doc(uid).collection("presence");
+
+    QuerySnapshot<Map<String, dynamic>> snapPresence = await colPresence.get();
+
+    // print(snapPresence.docs.length);
+
+    DateTime now = DateTime.now();
+    String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+    if (snapPresence.docs.length == 0) {
+      // belum absen
+      await colPresence.doc(todayDocID).set({
+        "date": now.toIso8601String(),
+        "masuk": {
+          "date": now.toIso8601String(),
+          "lat": position.latitude,
+          "long": position.longitude,
+          "address": address,
+          "status": "Di kantor",
+        },
+      });
+    } else {
+      DocumentSnapshot<Map<String, dynamic>> todayDoc =
+          await colPresence.doc(todayDocID).get();
+      if (todayDoc.exists == true) {
+        Map<String, dynamic>? dataPresenceToday = todayDoc.data();
+        if (dataPresenceToday?["keluar"] != null) {
+          // sudah absen
+          Get.snackbar("Success",
+              "Kamu sudah melakukan absen hari ini silakan lakukan absen kembali besok.");
+        } else {
+          // absen keluar
+          await colPresence.doc(todayDocID).update({
+            "keluar": {
+              "date": now.toIso8601String(),
+              "lat": position.latitude,
+              "long": position.longitude,
+              "address": address,
+              "status": "Di kantor",
+            },
+          });
+        }
+      } else {
+        // absen masuk
+        print("jalan");
+        await colPresence.doc(todayDocID).set({
+          "date": now.toIso8601String(),
+          "masuk": {
+            "date": now.toIso8601String(),
+            "lat": position.latitude,
+            "long": position.longitude,
+            "address": address,
+            "status": "Di kantor",
+          },
+        });
+      }
+    }
+  }
+
+  Future<void> updatePosition(Position position, String address) async {
     String uid = await auth.currentUser!.uid;
 
     await firestore.collection("pegawai").doc(uid).update(
@@ -44,6 +115,7 @@ class PageIndexController extends GetxController {
           "lat": position.latitude,
           "long": position.longitude,
         },
+        "address": address,
       },
     );
   }
