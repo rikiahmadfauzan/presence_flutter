@@ -26,8 +26,11 @@ class PageIndexController extends GetxController {
           String address =
               "${placemarks[0].street}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].subAdministrativeArea}, ${placemarks[0].administrativeArea} ${placemarks[0].postalCode}";
           await updatePosition(position, address);
+          // position
+          double distance = Geolocator.distanceBetween(
+              -6.9166886, 107.6084801, position.latitude, position.longitude);
           //presensi
-          await presensi(position, address);
+          await presensi(position, address, distance);
 
           Get.snackbar("Berhasil", "Telah berhasil melakukan absen");
         } else {
@@ -44,7 +47,8 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future<void> presensi(Position position, String address) async {
+  Future<void> presensi(
+      Position position, String address, double distance) async {
     String uid = await auth.currentUser!.uid;
 
     CollectionReference<Map<String, dynamic>> colPresence =
@@ -56,6 +60,13 @@ class PageIndexController extends GetxController {
 
     DateTime now = DateTime.now();
     String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+
+    String status = "Di Luar Area";
+
+    if (distance <= 500) {
+      status = "Di Dalam Area";
+    }
+
     if (snapPresence.docs.length == 0) {
       // belum absen
       await colPresence.doc(todayDocID).set({
@@ -65,7 +76,8 @@ class PageIndexController extends GetxController {
           "lat": position.latitude,
           "long": position.longitude,
           "address": address,
-          "status": "Di kantor",
+          "status": status,
+          "distance": distance,
         },
       });
     } else {
@@ -85,7 +97,8 @@ class PageIndexController extends GetxController {
               "lat": position.latitude,
               "long": position.longitude,
               "address": address,
-              "status": "Di kantor",
+              "status": status,
+              "distance": distance,
             },
           });
         }
@@ -99,7 +112,8 @@ class PageIndexController extends GetxController {
             "lat": position.latitude,
             "long": position.longitude,
             "address": address,
-            "status": "Di kantor",
+            "status": status,
+            "distance": distance,
           },
         });
       }

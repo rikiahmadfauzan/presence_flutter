@@ -162,63 +162,83 @@ class HomeView extends GetView<HomeController> {
                   ],
                 ),
                 SizedBox(height: 10),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Material(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.grey[200],
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: () => Get.toNamed(Routes.DETAIL_PRESENSI),
-                          child: Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: controller.streamLastPresence(),
+                  builder: (context, snapPresence) {
+                    if (snapPresence.connectionState ==
+                        ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (snapPresence.data?.docs.length == 0 ||
+                        snapPresence.data == null) {
+                      return SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: Text("Belum ada history..."),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapPresence.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.grey[200],
+                            child: InkWell(
                               borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              onTap: () => Get.toNamed(Routes.DETAIL_PRESENSI),
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Masuk",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${DateFormat.yMMMEd().format(DateTime.now())}",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     Text(
-                                      "Masuk",
+                                        "${DateFormat.jms().format(DateTime.now())}"),
+                                    Text(
+                                      "Keluar",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      "${DateFormat.yMMMEd().format(DateTime.now())}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                        "${DateFormat.jms().format(DateTime.now())}"),
                                   ],
                                 ),
-                                Text(
-                                    "${DateFormat.jms().format(DateTime.now())}"),
-                                Text(
-                                  "Keluar",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                    "${DateFormat.jms().format(DateTime.now())}"),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
-                )
+                ),
               ],
             );
           } else {
