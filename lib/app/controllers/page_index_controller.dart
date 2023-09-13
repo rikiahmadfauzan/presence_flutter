@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:presence/app/routes/app_pages.dart';
@@ -66,20 +67,34 @@ class PageIndexController extends GetxController {
     if (distance <= 500) {
       status = "Di Dalam Area";
     }
-
     if (snapPresence.docs.length == 0) {
       // belum absen
-      await colPresence.doc(todayDocID).set({
-        "date": now.toIso8601String(),
-        "masuk": {
-          "date": now.toIso8601String(),
-          "lat": position.latitude,
-          "long": position.longitude,
-          "address": address,
-          "status": status,
-          "distance": distance,
-        },
-      });
+      await Get.defaultDialog(
+          title: "ABSEN",
+          middleText: "Apakah anda akan melakukan absen sekarang?",
+          actions: [
+            OutlinedButton(
+              onPressed: () => Get.back(),
+              child: Text("CANCEL"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await colPresence.doc(todayDocID).set({
+                  "date": now.toIso8601String(),
+                  "masuk": {
+                    "date": now.toIso8601String(),
+                    "lat": position.latitude,
+                    "long": position.longitude,
+                    "address": address,
+                    "status": status,
+                    "distance": distance,
+                  },
+                });
+                Get.back();
+              },
+              child: Text("YES"),
+            ),
+          ]);
     } else {
       DocumentSnapshot<Map<String, dynamic>> todayDoc =
           await colPresence.doc(todayDocID).get();
@@ -146,7 +161,8 @@ class PageIndexController extends GetxController {
       // App to enable the location services.
       // return Future.error('Location services are disabled.');
       return {
-        "message": "Tidak dapat mengambil location dari device.",
+        "message":
+            "Tidak dapat mengambil location dari device silahkan aktifkan GPS terlebih dahulu.",
         "error": true,
       };
     }
