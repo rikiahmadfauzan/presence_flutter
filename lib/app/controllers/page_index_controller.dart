@@ -14,10 +14,8 @@ class PageIndexController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void changePage(int i) async {
-    print('click index=$i');
     switch (i) {
       case 1:
-        print("Absen");
         Map<String, dynamic> dataResponse = await determinePosition();
         if (dataResponse["error"] != true) {
           Position position = dataResponse["position"];
@@ -32,8 +30,6 @@ class PageIndexController extends GetxController {
               -6.9166886, 107.6084801, position.latitude, position.longitude);
           //presensi
           await presensi(position, address, distance);
-
-          Get.snackbar("Berhasil", "Telah berhasil melakukan absen");
         } else {
           Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
         }
@@ -91,6 +87,8 @@ class PageIndexController extends GetxController {
                   },
                 });
                 Get.back();
+                Get.snackbar(
+                    "Berhasil", "Telah berhasil melakukan absen Masuk.");
               },
               child: Text("YES"),
             ),
@@ -102,35 +100,68 @@ class PageIndexController extends GetxController {
         Map<String, dynamic>? dataPresenceToday = todayDoc.data();
         if (dataPresenceToday?["keluar"] != null) {
           // sudah absen
-          Get.snackbar("Success",
+          Get.snackbar("Information",
               "Kamu sudah melakukan absen hari ini silakan lakukan absen kembali besok.");
         } else {
           // absen keluar
-          await colPresence.doc(todayDocID).update({
-            "keluar": {
-              "date": now.toIso8601String(),
-              "lat": position.latitude,
-              "long": position.longitude,
-              "address": address,
-              "status": status,
-              "distance": distance,
-            },
-          });
+          await Get.defaultDialog(
+              title: "ABSEN",
+              middleText: "Apakah anda akan melakukan absen Keluar sekarang?",
+              actions: [
+                OutlinedButton(
+                  onPressed: () => Get.back(),
+                  child: Text("CANCEL"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await colPresence.doc(todayDocID).update({
+                      "keluar": {
+                        "date": now.toIso8601String(),
+                        "lat": position.latitude,
+                        "long": position.longitude,
+                        "address": address,
+                        "status": status,
+                        "distance": distance,
+                      },
+                    });
+                    Get.back();
+                    Get.snackbar(
+                        "Berhasil", "Telah berhasil melakukan absen Keluar.");
+                  },
+                  child: Text("YES"),
+                ),
+              ]);
         }
       } else {
         // absen masuk
-        print("jalan");
-        await colPresence.doc(todayDocID).set({
-          "date": now.toIso8601String(),
-          "masuk": {
-            "date": now.toIso8601String(),
-            "lat": position.latitude,
-            "long": position.longitude,
-            "address": address,
-            "status": status,
-            "distance": distance,
-          },
-        });
+        await Get.defaultDialog(
+            title: "ABSEN",
+            middleText: "Apakah anda akan melakukan absen Masuk sekarang?",
+            actions: [
+              OutlinedButton(
+                onPressed: () => Get.back(),
+                child: Text("CANCEL"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await colPresence.doc(todayDocID).set({
+                    "date": now.toIso8601String(),
+                    "masuk": {
+                      "date": now.toIso8601String(),
+                      "lat": position.latitude,
+                      "long": position.longitude,
+                      "address": address,
+                      "status": status,
+                      "distance": distance,
+                    },
+                  });
+                  Get.back();
+                  Get.snackbar(
+                      "Berhasil", "Telah berhasil melakukan absen Masuk.");
+                },
+                child: Text("YES"),
+              ),
+            ]);
       }
     }
   }
