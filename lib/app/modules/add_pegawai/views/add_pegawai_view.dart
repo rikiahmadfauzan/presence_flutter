@@ -51,6 +51,9 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
           ),
           Obx(
             () => ElevatedButton(
+              // style: ElevatedButton.styleFrom(
+              //   backgroundColor: Colors.red,
+              // ),
               onPressed: () async {
                 if (controller.isLoading.isFalse) {
                   await controller.addPegawai();
