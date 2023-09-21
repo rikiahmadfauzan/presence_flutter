@@ -39,21 +39,25 @@ class AppPages {
       name: _Paths.ADD_PEGAWAI,
       page: () => AddPegawaiView(),
       binding: AddPegawaiBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.LOGIN,
       page: () => LoginView(),
       binding: LoginBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.NEW_PASSWORD,
       page: () => NewPasswordView(),
       binding: NewPasswordBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.FORGOT_PASSWORD,
       page: () => ForgotPasswordView(),
       binding: ForgotPasswordBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.PROFILE,
@@ -65,11 +69,13 @@ class AppPages {
       name: _Paths.UPDATE_PROFILE,
       page: () => UpdateProfileView(),
       binding: UpdateProfileBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.UPDATE_PASSWORD,
       page: () => UpdatePasswordView(),
       binding: UpdatePasswordBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.DETAIL_PRESENSI,

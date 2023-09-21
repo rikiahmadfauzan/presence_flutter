@@ -86,10 +86,10 @@ class AddPegawaiController extends GetxController {
         emailC.text.isNotEmpty) {
       isLoading.value = true;
       Get.defaultDialog(
-        title: "Validasi Admin",
+        title: "Admin",
         content: Column(
           children: [
-            Text("Masukan Password"),
+            Text("Masukan Password Admin"),
             SizedBox(
               height: 20,
             ),
@@ -110,7 +110,7 @@ class AddPegawaiController extends GetxController {
               isLoading.value = false;
               Get.back();
             },
-            child: Text("Cancel"),
+            child: Text("CANCEL"),
           ),
           Obx(
             () => ElevatedButton(
@@ -121,7 +121,7 @@ class AddPegawaiController extends GetxController {
                 isLoading.value = false;
               },
               child: Text(
-                  isLoadingAddPegawai.isFalse ? "Add Pegawai" : "LOADING..."),
+                  isLoadingAddPegawai.isFalse ? "ADD PEGAWAI" : "LOADING..."),
             ),
           )
         ],

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+// import 'package:syncfusion_flutter_datagrid_export/export.dart';
 
 class AllPresensiController extends GetxController {
   DateTime? start;
@@ -8,6 +9,13 @@ class AllPresensiController extends GetxController {
 
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Future<void> exportDataGridToExcel() async {
+  //   final Workbook workbook = _key.currentState!.exportToExcelWorkbook();
+  //   final List<int> bytes = workbook.saveAsStream();
+  //   File('DataGrid.xlsx').writeAsBytes(bytes);
+  //   workbook.dispose();
+  // }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getPresence() async {
     String uid = auth.currentUser!.uid;
